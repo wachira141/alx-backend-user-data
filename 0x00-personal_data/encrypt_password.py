@@ -5,7 +5,7 @@ Module to encrypt a text based password
 import bcrypt
 
 
-def hash_password(password: str) :
+def hash_password(password: str) -> bytes:
     '''function to hash a password
     '''
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())

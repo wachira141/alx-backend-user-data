@@ -15,16 +15,16 @@ patterns = {
 }
 
 
-def filter_datum(fields, sub, message,sep):
+def filter_datum(fields, sub, message, sep):
     '''for fld in fields:
-        pattern = "{}=[\w+,/]*".format(fld) 
+        pattern = "{}=[\\w+,/]*".format(fld)
         replacer = '{}={}'.format(fld, sub)
         message = re.sub(pattern, replacer, message)
     return message
     '''
     extract, replace = (patterns["extract"], patterns["replace"])
     return re.sub(extract(fields, separator), replace(redaction), message)
-    
+
 
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
@@ -68,7 +68,7 @@ def get_db():
     db_name = os.getenv("PERSONAL_DATA_DB_NAME")
 
     connector = mysql.connect(
-        host = db_host,
+        host=db_host,
         port=3306,
         name=db_name,
         user=db_user,
@@ -80,7 +80,7 @@ def get_db():
 def main() -> None:
     """Log the information about user records in a table
     """
-    query_fields = "name, email, phone, ssn, password, ip, last_login, user_agent"
+    query_fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
     columns = query_fields.split(',')
     query = "SELECT {} FROM users".format(query_fields)
     info_logger = get_logger()
@@ -97,6 +97,7 @@ def main() -> None:
             args = ("user_data", logging.INFO, None, None, msg, None, None)
             log_record = logging.LogRecord(*args)
             info_logger.handle(log_record)
+
 
 if __name__ == "__main__":
     main()
