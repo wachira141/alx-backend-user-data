@@ -15,15 +15,12 @@ patterns = {
 }
 
 
-def filter_datum(fields, sub, message, sep):
-    '''for fld in fields:
-        pattern = "{}=[\\w+,/]*".format(fld)
-        replacer = '{}={}'.format(fld, sub)
-        message = re.sub(pattern, replacer, message)
-    return message
+def filter_datum(
+        fields: List[str], sub: str, message: str, sep: str) -> str:
+    '''filter a log
     '''
     extract, replace = (patterns["extract"], patterns["replace"])
-    return re.sub(extract(fields, separator), replace(redaction), message)
+    return re.sub(extract(fields, sep), replace(sub), message)
 
 
 class RedactingFormatter(logging.Formatter):
@@ -59,7 +56,7 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db():
+def get_db() -> mysql.connector.connection.MYSQLConnection:
     '''connect to a db
     '''
     db_user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
