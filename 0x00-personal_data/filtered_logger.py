@@ -16,7 +16,8 @@ patterns = {
 
 
 def filter_datum(
-        fields: List[str], sub: str, message: str, sep: str) -> str:
+        fields: List[str], sub: str, message: str, sep: str,
+        ) -> str:
     '''filter a log
     '''
     extract, replace = (patterns["extract"], patterns["replace"])
@@ -36,8 +37,7 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """
-        formats a log record
+        """formats a log record
         """
         msg = super(RedactingFormatter, self).format(record)
         text = filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
@@ -62,24 +62,24 @@ def get_db() -> mysql.connector.connection.MYSQLConnection:
     db_user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
     db_password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
     db_host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME", "")
 
-    connector = mysql.connect(
+    connector = mysql.connector.connect(
         host=db_host,
         port=3306,
         name=db_name,
         user=db_user,
-        password=db_password
+        password=db_password,
     )
     return connector
 
 
-def main() -> None:
+def main():
     """Log the information about user records in a table
     """
     query_fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
     columns = query_fields.split(',')
-    query = "SELECT {} FROM users".format(query_fields)
+    query = "SELECT {} FROM users;".format(query_fields)
     info_logger = get_logger()
     connection = get_db()
     with connection.cursor() as cursor:
