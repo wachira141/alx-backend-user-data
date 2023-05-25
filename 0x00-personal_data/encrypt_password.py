@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-'''
-Module to encrypt a text based password
-'''
+"""A module for encrypting passwords.
+"""
 import bcrypt
 
 
 def hash_password(password: str) -> bytes:
-    '''function to hash a password
-    '''
+    """Hashes a password using a random salt.
+    """
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
-def is_valid(hashed_pw: bytes, password: str) -> bool:
-    """check if a hashed passw is formed from the given password
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    """Checks is a hashed password was formed from the given password.
     """
-    return bcrypt.checkpw(password.encode('utf-8'), hashed_pw)
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
