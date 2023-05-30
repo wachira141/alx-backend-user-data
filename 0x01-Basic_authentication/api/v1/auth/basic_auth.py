@@ -21,7 +21,7 @@ class BasicAuth(Auth):
         if authorization_header is None \
                 or type(authorization_header) is not str:
             return None
-        pattern = r'Basic (<?P<token>.+)'
+        pattern = r'Basic (?P<token>.+)'
         auth_header = re.fullmatch(pattern, authorization_header.strip())
         if auth_header is not None:
             return auth_header.group('token')
