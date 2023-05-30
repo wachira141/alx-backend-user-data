@@ -12,6 +12,7 @@ class Auth():
     """
     class Auth to manage auth for the API
     """
+
     def __init__(self):
         """initialize Auth class"""
 
@@ -30,7 +31,7 @@ class Auth():
                 if re.match(pattern, path):
                     return False
         return True
-    
+
     def authorization_header(self, request=None) -> str:
         """public method
             return None - request is a Flask req object
@@ -38,11 +39,11 @@ class Auth():
         if request is None:
             return None
         rj = request.get('Authorization', None)
-        if rj == None:
+        if rj is None:
             return None
 
         return rj
-    
+
     def current_user(self, request=None) -> TypeVar('User'):
         """public method
             return None - request is a Flask req object
