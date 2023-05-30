@@ -23,19 +23,21 @@ if auth_type:
         from api.v1.auth.basic_auth import BasicAuth
         auth = BasicAuth()
 
+
 @app.before_request
 def handle_before_req():
     """before request handler
     """
     if auth is not None:
         req_path = request.path
-        paths_list = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
+        paths_list = ['/api/v1/status/', '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/']
         req_auth = auth.require_auth(req_path, paths_list)
-       
+
         req_headers = request.headers
         if req_auth:
             auth_header = auth.authorization_header(req_headers)
-    
+
             if auth_header is None:
                 abort(401)
 
@@ -46,12 +48,12 @@ def handle_before_req():
         pass
 
 
-
 @app.errorhandler(401)
 def un_authorized(error) -> str:
     """Not authorized handler
     """
     return jsonify({"error": "Unauthorized"}), 401
+
 
 @app.errorhandler(403)
 def forbidden_route(error) -> str:
@@ -59,13 +61,12 @@ def forbidden_route(error) -> str:
     """
     return jsonify({"error": "Forbidden"}), 403
 
+
 @app.errorhandler(404)
 def not_found(error) -> str:
     """ Not found handler
     """
     return jsonify({"error": "Not found"}), 404
-
-    
 
 
 if __name__ == "__main__":
