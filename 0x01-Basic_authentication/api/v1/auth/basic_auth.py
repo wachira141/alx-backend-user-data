@@ -28,21 +28,21 @@ class BasicAuth(Auth):
 
         return None
 
-    def decode_base64_authorization_header(self,
-                                           base64_authorization_header: str
-                                           ) -> str:
-        """decode a Base64 string"""
-        if base64_authorization_header is None \
-                or type(base64_authorization_header) is not str:
-            return None
-
-        try:
-            base64_str = base64_authorization_header.encode('utf-8')
-            base64_str = base64.b64decode(base64_str, validate=True)
-            message = base64_str.decode('utf-8')
-        except (binascii.Error, UnicodeDecodeError):
-            return None
-        return message
+    def decode_base64_authorization_header(
+            self,
+            base64_authorization_header: str,
+            ) -> str:
+        """Decodes a base64-encoded authorization header.
+        """
+        if type(base64_authorization_header) == str:
+            try:
+                res = base64.b64decode(
+                    base64_authorization_header,
+                    validate=True,
+                )
+                return res.decode('utf-8')
+            except (binascii.Error, UnicodeDecodeError):
+                return None
 
     def extract_user_credentials(self,
                                  decoded_base64_authorization_header: str
