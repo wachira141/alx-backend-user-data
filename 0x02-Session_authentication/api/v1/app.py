@@ -14,7 +14,7 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 
-auth_type = getenv('AUTH_TYPE', None)
+auth_type = getenv('AUTH_TYPE', 'auth')
 if auth_type:
     from api.v1.auth.auth import Auth
     if auth_type == 'auth':
@@ -52,12 +52,10 @@ def handle_before_req():
             if auth_header is None and auth_session is None:
                 abort(401)
 
-            current_user = auth.current_user(request)
-            if current_user is None:
+            current_usr = auth.current_user(request)
+            if current_usr is None:
                 abort(403)
-            request.current_user = current_user
-    else:
-        pass
+            request.current_user = current_usr
 
 
 @app.errorhandler(401)
