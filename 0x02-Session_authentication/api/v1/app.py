@@ -29,7 +29,7 @@ if auth_type:
         from api.v1.auth.session_exp_auth import SessionExpAuth
         auth = SessionExpAuth()
     if auth_type == 'session_db_auth':
-        from api.v1.auth.session_exp_auth import SessionDBAuth
+        from api.v1.auth.session_db_auth import SessionDBAuth
         auth = SessionDBAuth()
 
 
