@@ -52,7 +52,7 @@ def handle_before_req():
             if auth_header is None and auth_session is None:
                 abort(401)
 
-            current_user = auth.current_user()
+            current_user = auth.current_user(request)
             if current_user is None:
                 abort(403)
             request.current_user = current_user
@@ -84,4 +84,4 @@ def not_found(error) -> str:
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port)
