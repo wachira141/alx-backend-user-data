@@ -46,15 +46,16 @@ def handle_before_req():
 
         req_headers = request.headers
         if req_auth:
-            auth_header = auth.authorization_header(req_headers)
+            auth_header = auth.authorization_header(request)
             auth_session = auth.session_cookie(request)
 
             if auth_header is None and auth_session is None:
                 abort(401)
 
-            current_user = request.current_user()
+            current_user = auth.current_user()
             if current_user is None:
                 abort(403)
+            request.current_user = current_user
     else:
         pass
 
