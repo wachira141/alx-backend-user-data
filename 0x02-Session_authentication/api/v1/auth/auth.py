@@ -4,6 +4,7 @@ module to contain a class that will
 manage the API authentication
 """
 import re
+import os
 from flask import request
 from typing import List, TypeVar
 
@@ -38,7 +39,7 @@ class Auth():
         """
         if request is None:
             return None
-        rj = request.get('Authorization', None)
+        rj = request.headers.get('Authorization', None)
         if rj is None:
             return None
 
