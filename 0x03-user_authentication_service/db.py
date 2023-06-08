@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+"""DB module
+"""
+# from uuid import uuid4
+from typing import Union
+from sqlalchemy import create_engine, tuple_
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import NoResultFound, InvalidRequestError
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import Session
+
+from user import Base
+from user import User
+
+
+class DB:
+    """DB class
+    """
+
+    def __init__(self) -> None:
+        """Initialize a new DB instance
+        """
+        self._engine = create_engine("sqlite:///a.db", echo=False)
+        Base.metadata.drop_all(self._engine)
+        Base.metadata.create_all(self._engine)
+        self.__session = None
+
+    @property
+    def _session(self) -> Session:
+        """Memoized session object
+        """
+        if self.__session is None:
+            DBSession = sessionmaker(bind=self._engine)
+            self.__session = DBSession()
+        return self.__session
+
+    def reload(self):
+        """reload the database"""
+        return self._session
+
+    def add_user(self, email: str = None,
+                 hashed_password: str = None) -> Union[User, None]:
+        """add session user to the db
+        """
+        if email is None or hashed_password is None:
+            return None
+        try:
+            user_obj = User(email=email, hashed_password=hashed_password)
+            self.__session.add(user_obj)
+            self.__session.commit()
+        except Exception:
+            self.__session.rollback()
+            user_obj = None
+        return user_obj
+
+    def find_user_by(self, **kwargs) -> User:
+        """find a user using the keyword
+            @kwargs:
+        """
+
+        fields, values = [], []
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                fields.append(getattr(User, key))
+                print(getattr(User, key))
+                values.append(value)
+            else:
+                raise InvalidRequestError()
+        user = self._session.query(User).filter(
+            tuple_(*fields).in_([tuple(values)])
+        ).first()
+        if user is None:
+            raise NoResultFound()
+        return user
+
+        # for user in users:
+        #     if user.email == email:
+        #         return user
+        # raise NoResultFound
+    def update_user(self, user_id: int, **kwargs: dict) -> None:
+        """update a user
+            @user_id: id to identify a single user
+            @kwargs: other fields in User's class
+        """
+        user = self.find_user_by(id=user_id)
+
+        if user is None:
+            return None
+        updated_fields = {}
+        for key, values in kwargs.items():
+            if hasattr(User, key):
+                updated_fields[getattr(User, key)] = values
+            else:
+                raise ValueError()
+        user = self.__session.query(User).filter(
+            User.id == user_id
+            ).update(updated_fields, synchronize_session=False)
+        self.__session.commit()
