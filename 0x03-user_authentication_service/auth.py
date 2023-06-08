@@ -27,7 +27,7 @@ class Auth:
         """init Auth class"""
         self._db = DB()
 
-    def register_user(self, email: str = None, password: str = None):
+    def register_user(self, email: str, password: str) -> str:
         """public method register_user
             @email: user email str
             @password: user password str

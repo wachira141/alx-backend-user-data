@@ -43,6 +43,7 @@ class DB:
         """add session user to the db
         """
         try:
+            self.reload()
             user_obj = User(email=email, hashed_password=hashed_password)
             self.__session.add(user_obj)
             self.__session.commit()
@@ -55,12 +56,11 @@ class DB:
         """find a user using the keyword
             @kwargs:
         """
-
+        self.reload()
         fields, values = [], []
         for key, value in kwargs.items():
             if hasattr(User, key):
                 fields.append(getattr(User, key))
-                print(getattr(User, key))
                 values.append(value)
             else:
                 raise InvalidRequestError()
