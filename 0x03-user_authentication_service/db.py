@@ -43,12 +43,11 @@ class DB:
         """add session user to the db
         """
         try:
-            self.reload()
             user_obj = User(email=email, hashed_password=hashed_password)
-            self.__session.add(user_obj)
-            self.__session.commit()
+            self._session.add(user_obj)
+            self._session.commit()
         except Exception:
-            self.__session.rollback()
+            self._session.rollback()
             user_obj = None
         return user_obj
 
@@ -56,7 +55,6 @@ class DB:
         """find a user using the keyword
             @kwargs:
         """
-        self.reload()
         fields, values = [], []
         for key, value in kwargs.items():
             if hasattr(User, key):
@@ -75,7 +73,7 @@ class DB:
         #     if user.email == email:
         #         return user
         # raise NoResultFound
-    def update_user(self, user_id: int, **kwargs: dict) -> None:
+    def update_user(self, user_id: int, **kwargs) -> None:
         """update a user
             @user_id: id to identify a single user
             @kwargs: other fields in User's class
@@ -84,13 +82,13 @@ class DB:
 
         if user is None:
             return None
-        updated_fields = {}
+        update_source = {}
         for key, values in kwargs.items():
             if hasattr(User, key):
-                updated_fields[getattr(User, key)] = values
+                update_source[getattr(User, key)] = values
             else:
                 raise ValueError()
-        user = self.__session.query(User).filter(
+        self._session.query(User).filter(
             User.id == user_id
-            ).update(updated_fields, synchronize_session=False)
-        self.__session.commit()
+            ).update(update_source, synchronize_session=False,)
+        self._session.commit()

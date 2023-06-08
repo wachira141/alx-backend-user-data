@@ -57,22 +57,22 @@ class Auth:
 
     def _generate_uuid(self) -> str:
         """generate a uuid"""
-        return uuid4()
+        return str(uuid4())
 
     def create_session(self, email: str) -> str:
         """create a user session and save it in the db
             @email: email to find if user exists
         """
+        user = None
         try:
             user = self._db.find_user_by(email=email)
-            if user is None:
-                return None
-
-            session_id = self._generate_uuid()
-            self._db.update_user(user.id, session_id=session_id)
-            return session_id
         except NoResultFound:
             return None
+        if user is None:
+            return None
+        session_id = self._generate_uuid()
+        self._db.update_user(user.id, session_id=session_id)
+        return session_id
 
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """find a user by session id
