@@ -38,8 +38,8 @@ class DB:
         """reload the database"""
         return self._session
 
-    def add_user(self, email: str = None,
-                 hashed_password: str = None) -> User:
+    def add_user(self, email: str,
+                 hashed_password: str) -> User:
         """add session user to the db
         """
         try:
