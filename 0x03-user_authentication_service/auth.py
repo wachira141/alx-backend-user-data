@@ -21,6 +21,7 @@ def _generate_uuid() -> str:
     """generate a uuid"""
     return str(uuid4())
 
+
 class Auth:
     """
     class to auth users credentials
