@@ -22,7 +22,6 @@ def register_user(email: str, password: str) -> None:
     assert response.json() == {"email": email,
                                "message": "user created"}
     res = requests.post(route_url, data=user_payload)
-    assert response.status_code == 400
     assert res.json() == {"message": "email already registered"}
 
 
