@@ -4,7 +4,7 @@
 import bcrypt
 from typing import Union
 from uuid import uuid4
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm.exc import NoResultFound
 from db import DB
 from user import User
 
