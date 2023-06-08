@@ -39,11 +39,9 @@ class DB:
         return self._session
 
     def add_user(self, email: str = None,
-                 hashed_password: str = None) -> Union[User, None]:
+                 hashed_password: str = None) -> User:
         """add session user to the db
         """
-        if email is None or hashed_password is None:
-            return None
         try:
             user_obj = User(email=email, hashed_password=hashed_password)
             self.__session.add(user_obj)
